@@ -1,6 +1,7 @@
 # AWS_SSH_commander
 A bash script for running bash commands through ssh to AWS EC2 instances. 
 Output is displayed on the host box and is seperated by a line of equal signs.
+Tested on instances using Amazon linux AMI and Centos 6.
 
 ## Getting started
 
@@ -55,3 +56,10 @@ aws_secret_access_key = ACCESS_KEY
  ENVIR=$2
  
  --filters "Name=tag:Environment,Values=$ENVIR"
+ 
+ ## Considerations
+ Sending Bash Commands over ssh can be strict and take some troubleshooting. 
+ for example, using cd and executing a script on a remote instance 
+ ```
+ ./ssh_commander us-east-1 Stage APP 'sudo /bin/sh -c "cd /home/example && ./script.sh"'
+ ```
