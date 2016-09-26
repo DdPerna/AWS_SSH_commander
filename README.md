@@ -14,7 +14,7 @@ git clone https://github.com/DdPerna/AWS_SSH_commander.git
 or download the script manually using this command:
 
 ```bash
-curl "https://raw.githubusercontent.com/AWS_SSH_commander/ssh_commander.sh" -o show_instances.sh
+curl "https://raw.githubusercontent.com/AWS_SSH_commander/ssh_commander.sh" -o ssh_commander.sh
 ```
 
 Then give the execution permission to the script and run it:
