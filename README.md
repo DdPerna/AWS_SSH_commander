@@ -57,6 +57,10 @@ aws_secret_access_key = ACCESS_KEY
  
  --filters "Name=tag:Environment,Values=$ENVIR"
  
+ ### Keys
+ The ssh connection is established with the ec2-user account and requires passing the required key for authenication. 
+ The script looks at which region is passed in to select the key, but this can be changed to your use case.
+ 
  ## Considerations
  Sending Bash Commands over ssh can be strict and take some troubleshooting. 
  for example, using cd and executing a script on a remote instance 
