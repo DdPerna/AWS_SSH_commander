@@ -5,8 +5,10 @@
 #set -ue
 #set -o pipefail
 
+# these saftey features have been commented out for troubleshooting purposes because if a command fails to run
+# on one instance out of a list, then the script will exit.
 
-
+# check if -h flag has been passed and if so display help information
 if [ "$1" == "-h" ]; then
   echo ""
   echo "### Description ###"
@@ -32,16 +34,24 @@ if [ "$1" == "-h" ]; then
   exit 1
 fi
 
+# make sure just these variables are set
+set -u
+
 REGION=$1
 ENVIR=$2
 VALUES=$3
 COM=$4
 
+set +u
+
+# line to seperate output
 SPACER="echo '"====================================="'"
 
+# include the ip address and instance id in the output for identification
 INSTANCE="curl -s http://169.254.169.254/latest/meta-data/instance-id && echo ''"
 ADDR="ip a s|sed -ne '/127.0.0.1/!{s/^[ \t]*inet[ \t]*\([0-9.]\+\)\/.*$/\1/p}'"
 
+# set which key should be used based on region
 if [ "$REGION" = "us-east-1" ]; then
   CERT="ec2-user-east.pem"
 
@@ -49,7 +59,7 @@ if [ "$REGION" = "us-east-1" ]; then
     CERT="ec2-user-west.pem"
 fi
 
-
+# check if -f flag has been passed, and if so, read file line by line and execute on specified remote instances
 if [ "$COM" = "-f" ]; then
 
   SCRIPT=$5
@@ -58,6 +68,7 @@ for i in `aws ec2 describe-instances --region $REGION --query 'Reservations[].In
 bash -s < "$SCRIPT";
 done;
 
+# execute bash command on specified instances
 else
 
 for i in `aws ec2 describe-instances --region $REGION --query 'Reservations[].Instances[].PrivateIpAddress[]' --filters "Name=tag:Environment,Values=$ENVIR" "Name=tag:Server Type,Values=$VALUES" "Name=instance-state-name,Values=running" --output=text`; do ssh -q -t -o "StrictHostKeyChecking no" -i $CERT ec2-user@$i " sudo $ADDR && sudo $INSTANCE && sudo $COM && $SPACER";
